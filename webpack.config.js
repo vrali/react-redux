@@ -2,6 +2,7 @@ const Webpack = require('webpack');
 const Path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const isProduction = process.argv.indexOf('-p') >= 0;
 const outPath = Path.join(__dirname, './dist');
@@ -10,7 +11,7 @@ const sourcePath = Path.join(__dirname, './src');
 module.exports = {
   context: sourcePath,
   entry: {
-    main: './index.tsx',
+    main: ['./index.tsx','./content/styles/app.scss'],
     vendor: [
       'react',
       'react-dom',
@@ -26,7 +27,7 @@ module.exports = {
   },
   target: 'web',
   resolve: {
-    extensions: ['.js', '.ts', '.tsx'],
+    extensions: ['.js', '.ts', '.tsx', '.scss'],
     // Fix webpack's default behavior to not load packages with jsnext:main module
     // https://github.com/Microsoft/TypeScript/issues/11677
     mainFields: ['browser', 'main']
@@ -42,37 +43,26 @@ module.exports = {
             'react-hot-loader/webpack',
             'awesome-typescript-loader'
           ]
-      },
-      // css
+      },    
+      // scss
       {
-        test: /\.css$/,
-        use: ExtractTextPlugin.extract({
+        test: /\.scss$/,
+        use: new ExtractTextPlugin({
+          filename: 'styles.css',
+          disable: !isProduction
+        }).extract({
           fallback: 'style-loader',
-          use: [
+          use: [{
+            loader : "style-loader"
+          },
             {
-              loader: 'css-loader',
-              query: {
-                modules: true,
-                sourceMap: !isProduction,
-                importLoaders: 1,
-                localIdentName: '[local]__[hash:base64:5]'
-              }
+              loader: 'css-loader',            
             },
             {
-              loader: 'postcss-loader',
-              options: {
-                ident: 'postcss',
-                plugins: [
-                  require('postcss-import')({ addDependencyTo: Webpack }),
-                  require('postcss-url')(),
-                  require('postcss-cssnext')(),
-                  require('postcss-reporter')(),
-                  require('postcss-browser-reporter')({ disabled: isProduction }),
-                ]
-              }
+              loader:"sass-loader"
             }
           ]
-        })
+        }),
       },
       // static assets
       { test: /\.html$/, use: 'html-loader' },
@@ -80,7 +70,7 @@ module.exports = {
       { test: /\.jpg$/, use: 'file-loader' },
     ],
   },
-  plugins: [
+  plugins: [    
     new Webpack.DefinePlugin({
       'process.env.NODE_ENV': isProduction === true ? JSON.stringify('production') : JSON.stringify('development')
     }),

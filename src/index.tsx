@@ -1,21 +1,31 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Router, Route, Switch } from 'react-router';
+import {BrowserRouter, Route, Switch, match } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
-import { configureStore } from './store';
-import { App } from './containers/App';
+import { configureStore } from './app/store';
+import { App } from './App/containers/appContainer';
+import { RootState } from './app/rootReducer';
 
-const store = configureStore();
+
+const initialState : RootState = {
+  account : {
+    isAuthenticated : true,
+    claims : {
+      isAdmin : false
+    }
+  }
+};
+const store = configureStore(initialState);
 const history = createBrowserHistory();
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router history={history}>
+    <BrowserRouter>
       <Switch>
         <Route path="/" component={App} />
       </Switch>
-    </Router>
+    </BrowserRouter>
   </Provider>,
   document.getElementById('root')
 );

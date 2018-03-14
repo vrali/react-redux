@@ -1,7 +1,7 @@
 /** Global definitions for developement **/
 
 // for style loader
-declare module '*.css' {
+declare module '*.scss' {
   const styles: any;
   export = styles;
 }
