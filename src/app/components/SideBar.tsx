@@ -1,39 +1,31 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
-import {Card,CardActions,CardMedia,CardHeader, Theme, Drawer, AppBar, Toolbar, List, ListItem, Typography, Divider, IconButton, withStyles, WithStyles, Button, ListItemIcon, ListItemText, Menu, MenuItem, ClickAwayListener, Grow, Paper, MenuList, GridList, GridListTile } from 'material-ui';
+import {Card,CardActions,CardMedia,CardHeader, Theme, Drawer, AppBar, Toolbar, List, ListItem, Typography, Divider, IconButton, withStyles, WithStyles, Button, ListItemIcon, ListItemText, Menu, MenuItem, ClickAwayListener, Grow, Paper, MenuList, GridList, GridListTile, StyleRulesCallback } from 'material-ui';
 import {ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon, Menu as MenuIcon, 
   Inbox as InboxIcon, Star as StarIcon, Send as SendIcon, Drafts as DraftsIcon, AccountCircle as AccountCircleIcon } from 'material-ui-icons';
 import { Manager, Target, Popper } from 'react-popper';
 import * as Dropzone from "react-dropzone";
-import { IStyle, styles} from "./SideBar.style";
+import { styles} from "./SideBar.style";
 
 interface Props{
-
+  openDrawer : boolean
 }
 
-const decorate = withStyles(styles ,{withTheme:true})
+const decorate = withStyles(styles as StyleRulesCallback ,{withTheme:true})
 
-export default  decorate(
+export default  decorate<Props>(
 class extends React.Component<Props & WithStyles<"drawerPaper"|"drawerPaperClose"|"drawerInner"|"drawerHeader">> {
-  state = {
-    openDrawer: false,
-  };
-
-  handleDrawerToggle = () => {
-    this.setState({ openDrawer: !this.state.openDrawer });    
-  };
-
   render() {
     const theme = this.props.theme as Theme;
-    const classes = this.props classes;
+    const classes = this.props.classes;
 
     return (         
           <Drawer 
             variant="permanent"
             classes={{
-              paper: classNames(classes.drawerPaper, !this.state.openDrawer && classes.drawerPaperClose),
+              paper: classNames(classes.drawerPaper, !this.props.openDrawer && classes.drawerPaperClose),
             }}
-            open={this.state.openDrawer}
+            open={this.props.openDrawer}
           >
             <div className={classes.drawerInner}>
               <div className={classes.drawerHeader}>

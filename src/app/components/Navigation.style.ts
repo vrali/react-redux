@@ -52,6 +52,5 @@ export const styles = (theme : Theme) => ({
         height: 'calc(100% - 64px)',
         marginTop: 64,
       }
-    },
-   
+    },   
   });

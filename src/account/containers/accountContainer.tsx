@@ -5,22 +5,35 @@ import { RouteComponentProps } from 'react-router';
 import { RootState } from '../../app/rootReducer';
 import Login from '../components/Login';
 import { Redirect, Route, withRouter } from "react-router";
+import * as AccountActions from '../actionCreators/account';
 
 
-  export interface AccountProps {
-    account : any,
+  interface Props {    
   }
 
-  export interface AccountState {
+  interface State {
     /* empty */
   }
 
-@connect(mapStateToProps)
- export default class AccountContainer extends React.Component<AccountProps, AccountState> {
+
+  class AccountContainer extends React.Component<Props , State> {
+
+  constructor(props){
+    super(props);
+    this.handleLogin =  this.handleLogin.bind(this);
+  }
+   handleLogin(){
+     (this.props as any).loginActions.login();
+     
+
+   }
+   handleRegister(){
+
+   }
 
   render() {
     return (
-        <Login {...this.props}></Login>
+        <Login handleLogin={this.handleLogin} ></Login>
     );
   }
 }
@@ -30,4 +43,10 @@ function mapStateToProps(state: RootState) {
     account: state.account
   };
 }
+function mapDispatchToProps(dispatch) {
+  return {
+    loginActions : bindActionCreators(AccountActions,dispatch)
+  };
+}
 
+export default connect<Props>(mapStateToProps,mapDispatchToProps)(AccountContainer);

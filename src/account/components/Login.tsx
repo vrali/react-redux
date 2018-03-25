@@ -1,12 +1,13 @@
 import * as React from "react";
-import { WithStyles, TextField, Button, withStyles, Paper, Divider } from "material-ui";
-import {IStyle,styles} from "./Login.style";
+import { WithStyles, TextField, Button, withStyles, Paper, Divider, StyleRulesCallback } from "material-ui";
+import {styles} from "./Login.style";
 
 interface Props{
-
+    handleLogin : ()=>void
 }
 
-class Login extends React.Component<Props & WithStyles>{
+class Login extends React.Component<Props & WithStyles<"container"|"textField"|"loginForm"|"buttonContainer"|"divider">>{
+   
 
     handleClick(event){
 
@@ -15,7 +16,8 @@ class Login extends React.Component<Props & WithStyles>{
     
     render(){
         const theme = this.props.theme;
-        const classes = (this.props as any).classes as IStyle;
+        const classes = this.props.classes;
+        let {handleLogin} = this.props;
 
         return (
             <form className={classes.loginForm} noValidate autoComplete="off">
@@ -37,7 +39,7 @@ class Login extends React.Component<Props & WithStyles>{
           margin="normal"
         />
         <div className={classes.buttonContainer}>
-             <Button variant="raised" color="secondary"  onClick={(event) => this.handleClick(event)}>
+             <Button variant="raised" color="secondary"  onClick={(event)=>{this.props.handleLogin()}}>
              Login
              </Button>
              <Button variant="raised" color="secondary"  onClick={(event) => this.handleClick(event)}>
@@ -60,6 +62,6 @@ class Login extends React.Component<Props & WithStyles>{
 
 }
 
-const decorate = withStyles(styles ,{withTheme:true})
+const decorate = withStyles(styles as StyleRulesCallback ,{withTheme:true})
 
-export default  decorate(Login as any);
+export default  decorate<Props>(Login);

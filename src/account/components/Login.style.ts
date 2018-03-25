@@ -1,36 +1,28 @@
 import { Theme } from "material-ui";
 
-export interface IStyle{
-    container: any,
-    textField:any,
-    loginForm:any,
-    buttonContainer:any,
-    divider:any
-  }
-
 export const styles = (theme : Theme) => ({
-    container: {
+    "container": {
         display: 'flex',
         flexDirection: 'column',
         width: '300px',
         padding: '30px',
     },
-    textField: {
+    "textField": {
         width: '300px',
         alignSelf: 'center',
     },
-    loginForm: {
+    "loginForm": {
         display: 'flex',
         marginTop: '80px',
         justifyContent: 'center',
     },
-    buttonContainer: {
+    "buttonContainer": {
         display: 'flex',
-    marginTop: '30px',
-    justifyContent: 'space-evenly',
-    marginBottom:'20px'
+        marginTop: '30px',
+        justifyContent: 'space-evenly',
+        marginBottom:'20px'
     },
-    divider:{
+    "divider":{
         padding : "0 0"
     }
-  } as IStyle );
+  } );

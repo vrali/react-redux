@@ -4,7 +4,7 @@ const drawerWidth = 240;
 
 export const styles = (theme : Theme) => ({
    
-    drawerPaper: {
+    "drawerPaper": {
       [theme.breakpoints.down('xs')]: {
         display: 'none'
       },
@@ -16,7 +16,7 @@ export const styles = (theme : Theme) => ({
         duration: theme.transitions.duration.enteringScreen,
       }),
     },
-    drawerPaperClose: {
+    "drawerPaperClose": {
       width: 60,
       overflowX: 'hidden',
       transition: theme.transitions.create('width', {
@@ -24,11 +24,11 @@ export const styles = (theme : Theme) => ({
         duration: theme.transitions.duration.leavingScreen,
       }),
     },
-    drawerInner: {
+    "drawerInner": {
       // Make the items inside not wrap when transitioning:
       width: drawerWidth,
     },
-    drawerHeader: {
+    "drawerHeader": {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'flex-end',
