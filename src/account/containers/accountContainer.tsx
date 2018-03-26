@@ -8,32 +8,48 @@ import { Redirect, Route, withRouter } from "react-router";
 import * as AccountActions from '../actionCreators/account';
 
 
-  interface Props {    
+  interface Props {   
+    account? : Auth,
+    loginActions? : { login : (credentials : LoginPayLoad)=> Promise<void>} 
   }
 
   interface State {
-    /* empty */
+    redirectToReferrer : boolean
   }
 
 
-  class AccountContainer extends React.Component<Props , State> {
+  class AccountContainer extends React.Component<Props & RouteComponentProps<any> , State> {
 
   constructor(props){
     super(props);
     this.handleLogin =  this.handleLogin.bind(this);
+    this.state = {
+      redirectToReferrer: false,     
+    };
   }
-   handleLogin(){
-     (this.props as any).loginActions.login();
+   handleLogin(userName,password){
+     this.props.loginActions
+     .login({userName,password})
+     .then(()=>{
+       this.setState({redirectToReferrer :true});
+     });
+
+
      
 
    }
-   handleRegister(){
+   redirectToRegister(){
+     
 
    }
 
   render() {
+    const {from} = this.props.location.state || {from:{pathName : "/"}};
+    if(this.state.redirectToReferrer){
+      return <Redirect to={from}></Redirect>
+    }
     return (
-        <Login handleLogin={this.handleLogin} ></Login>
+        <Login handleLogin={this.handleLogin} redirectToRegister={this.redirectToRegister} ></Login>
     );
   }
 }
@@ -49,4 +65,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect<Props>(mapStateToProps,mapDispatchToProps)(AccountContainer);
+export default withRouter(connect<Props>(mapStateToProps,mapDispatchToProps)(AccountContainer));

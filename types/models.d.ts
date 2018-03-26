@@ -12,7 +12,7 @@ declare type TodoFilterType = 'SHOW_ALL' | 'SHOW_ACTIVE' | 'SHOW_COMPLETED';
 
 // declare type TodoStoreState = TodoItemData[];
 
-declare interface AuthState {
+declare interface Auth {
   isAuthenticated : boolean,
   claims? : {
     isAdmin : boolean
@@ -20,4 +20,8 @@ declare interface AuthState {
   authError? : string
 }
 
+declare interface LoginPayLoad{
+  userName : string,
+password : string
+}
 

@@ -48,7 +48,8 @@ export class App extends React.Component<App.Props, App.State> {
       <MuiThemeProvider theme={theme} >      
           <Navigation  auth={this.props.account} > 
             <PrivateRoute path="/roster" auth={this.props.account} component={Roster}></PrivateRoute>
-            <Route path="/login" component={Account}></Route>
+            <Route path="/login" component={Account}>
+            </Route>
           </Navigation>    
       </MuiThemeProvider>
     );

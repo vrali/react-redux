@@ -10,11 +10,12 @@ import SideBar from "./SideBar";
 import AccountMenu from "./AccountMenu";
 import Roster from "../../roster/components/Roster";
 import Account from "../../account/containers/accountContainer"
+import { Link } from 'react-router-dom';
 // import Login from "../Account/Login";
 // import Register from "../Account/Register";
 
 interface Props{
-  auth : AuthState
+  auth : Auth
 }
 
 const decorate = withStyles(styles as StyleRulesCallback ,{withTheme:true})
@@ -51,8 +52,10 @@ class Navigation extends React.Component<Props & WithStyles<"root"|"appFrame"|"b
               </IconButton>
               <Typography className={classes.brand} align="center" variant="title" color="inherit" noWrap>
                 App
-              </Typography>                            
-             {auth.isAuthenticated? "" :(<AccountMenu></AccountMenu>)}
+              </Typography>                   
+             {!auth.isAuthenticated && <Link to="/login"><Button variant="flat" color="secondary">
+            Logi</Button></Link>}          
+             {auth.isAuthenticated &&<AccountMenu></AccountMenu>}
             </Toolbar>
           </AppBar>
 

@@ -3,17 +3,26 @@ import { WithStyles, TextField, Button, withStyles, Paper, Divider, StyleRulesCa
 import {styles} from "./Login.style";
 
 interface Props{
-    handleLogin : ()=>void
+    handleLogin : (userName,password)=>void,
+    redirectToRegister : () =>void
 }
 
 class Login extends React.Component<Props & WithStyles<"container"|"textField"|"loginForm"|"buttonContainer"|"divider">>{
-   
-
-    handleClick(event){
-
+    constructor(props){
+        super(props);
+        this.state = {
+            redirectToReferrer : false,
+            
+        }
     }
+
+    updateCredentialsState(event : React.ChangeEvent<HTMLInputElement>){
+        const field = event.target.name;
+        this.state[field] = event.target.value;
+    }
+
+
    
-    
     render(){
         const theme = this.props.theme;
         const classes = this.props.classes;
@@ -28,6 +37,7 @@ class Login extends React.Component<Props & WithStyles<"container"|"textField"|"
           placeholder="Email"
           className={classes.textField}
           margin="normal"
+          onChange = {this.updateCredentialsState}
         />
            <br/>
            <TextField
@@ -36,13 +46,14 @@ class Login extends React.Component<Props & WithStyles<"container"|"textField"|"
           className={classes.textField}
           type="password"
           autoComplete="current-password"
-          margin="normal"
+          margin="normal"       
+          onChange = {this.updateCredentialsState}   
         />
         <div className={classes.buttonContainer}>
-             <Button variant="raised" color="secondary"  onClick={(event)=>{this.props.handleLogin()}}>
+             <Button variant="raised" color="secondary"  onClick={(event) => this.props.handleLogin("","")}>
              Login
              </Button>
-             <Button variant="raised" color="secondary"  onClick={(event) => this.handleClick(event)}>
+             <Button variant="raised" color="secondary"  onClick={(event) => this.props.redirectToRegister()}>
              Register
              </Button>
         </div>

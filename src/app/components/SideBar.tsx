@@ -6,6 +6,7 @@ import {ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon, Menu a
 import { Manager, Target, Popper } from 'react-popper';
 import * as Dropzone from "react-dropzone";
 import { styles} from "./SideBar.style";
+import { Link } from 'react-router-dom';
 
 interface Props{
   openDrawer : boolean
@@ -37,7 +38,7 @@ class extends React.Component<Props & WithStyles<"drawerPaper"|"drawerPaperClose
               <List>
                 <ListItem button>
                   <ListItemIcon>
-                    <InboxIcon />
+                    <Link to="/roster"> <InboxIcon /></Link>
                   </ListItemIcon>
                   <ListItemText primary="Inbox" />
                 </ListItem>
