@@ -1,18 +1,17 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import {BrowserRouter, Route, Switch, match } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
-import { configureStore } from './app/store';
-import { App } from './App/containers/appContainer';
-import { RootState } from './app/rootReducer';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { BrowserRouter, Route, Switch, match } from "react-router-dom";
+import { createBrowserHistory } from "history";
+import { configureStore } from "./app/store";
+import { App } from "./App/containers/appContainer";
+import { RootState } from "./app/rootReducer";
 
-
-const initialState : RootState = {
-  auth : {
-    isAuthenticated : false,
-    claims : {
-      isAdmin : false
+const initialState: RootState = {
+  user: {
+    isAuthenticated: false,
+    claims: {
+      isAdmin: false
     }
   }
 };
@@ -27,5 +26,5 @@ ReactDOM.render(
       </Switch>
     </BrowserRouter>
   </Provider>,
-  document.getElementById('root')
+  document.getElementById("root")
 );

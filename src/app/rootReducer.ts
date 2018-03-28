@@ -1,12 +1,12 @@
-import { combineReducers, Reducer } from 'redux';
-import accountReducer from '../account/reducers/accountReducer';
-import appReducer from "./reducers/appReducer"
+import { combineReducers, Reducer } from "redux";
+import loginReducer from "../user/reducers/loginReducer";
+import appReducer from "./reducers/appReducer";
 
 export interface RootState {
-  auth : Auth;
+  user: User;
 }
 
 export default combineReducers<RootState>({
-  auth : accountReducer,
-  app : appReducer
+  user: loginReducer,
+  app: appReducer
 });

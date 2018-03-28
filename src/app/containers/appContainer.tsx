@@ -11,10 +11,10 @@ import { MuiThemeProvider } from "material-ui/styles";
 import { PaletteOptions } from "material-ui/styles/createPalette";
 import Roster from "../../roster/components/Roster";
 import {
-  AccountContainer,
+  LoginContainer,
   Login,
   Register
-} from "../../account/containers/accountContainer";
+} from "../../user/containers/loginContainer";
 
 const theme = createMuiTheme({
   palette: {
@@ -35,7 +35,7 @@ const theme = createMuiTheme({
 
 export namespace App {
   export interface Props extends RouteComponentProps<void> {
-    auth: any;
+    user: any;
   }
 
   export interface State {}
@@ -47,14 +47,14 @@ export class App extends React.Component<App.Props, App.State> {
     const { children } = this.props;
     return (
       <MuiThemeProvider theme={theme}>
-        <Navigation auth={this.props.auth}>
+        <Navigation user={this.props.user}>
           <Switch>
             <PrivateRoute
               path="/roster"
-              auth={this.props.auth}
+              user={this.props.user}
               component={Roster}
             />
-            <Route component={AccountContainer} />
+            <Route component={LoginContainer} />
           </Switch>
         </Navigation>
       </MuiThemeProvider>
@@ -64,7 +64,7 @@ export class App extends React.Component<App.Props, App.State> {
 
 function mapStateToProps(state: RootState) {
   return {
-    auth: state.auth
+    user: state.user
   };
 }
 
@@ -72,11 +72,11 @@ function mapDispatchToProps(dispatch) {
   return {};
 }
 
-const PrivateRoute = ({ component: Component, auth: auth, ...rest }) => (
+const PrivateRoute = ({ component: Component, user: user, ...rest }) => (
   <Route
     {...rest}
     render={props =>
-      auth.isAuthenticated ? (
+      user.isAuthenticated ? (
         <Component {...props} />
       ) : (
         <Redirect

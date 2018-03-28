@@ -11,7 +11,7 @@ import { Switch } from "react-router-dom";
 
 export { Login, Register };
 interface Props {
-  auth?: Auth;
+  user?: User;
   loginActions?: { login: (credentials: LoginPayLoad) => Promise<void> };
 }
 
@@ -19,7 +19,10 @@ interface State {
   redirectToReferrer: boolean;
 }
 
-class Account extends React.Component<Props & RouteComponentProps<any>, State> {
+class Login_Container extends React.Component<
+  Props & RouteComponentProps<any>,
+  State
+> {
   constructor(props) {
     super(props);
     this.handleLogin = this.handleLogin.bind(this);
@@ -65,7 +68,7 @@ class Account extends React.Component<Props & RouteComponentProps<any>, State> {
 
 function mapStateToProps(state: RootState) {
   return {
-    auth: state.auth
+    user: state.user
   };
 }
 function mapDispatchToProps(dispatch) {
@@ -74,6 +77,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export const AccountContainer = withRouter(
-  connect<Props>(mapStateToProps, mapDispatchToProps)(Account)
+export const LoginContainer = withRouter(
+  connect<Props>(mapStateToProps, mapDispatchToProps)(Login_Container)
 );

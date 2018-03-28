@@ -8,20 +8,19 @@ declare interface Login {
 
 declare type TodoItemId = number;
 
-declare type TodoFilterType = 'SHOW_ALL' | 'SHOW_ACTIVE' | 'SHOW_COMPLETED';
+declare type TodoFilterType = "SHOW_ALL" | "SHOW_ACTIVE" | "SHOW_COMPLETED";
 
 // declare type TodoStoreState = TodoItemData[];
 
-declare interface Auth {
-  isAuthenticated : boolean,
-  claims? : {
-    isAdmin : boolean
-  },
-  authError? : string
+declare interface User {
+  isAuthenticated: boolean;
+  claims?: {
+    isAdmin: boolean;
+  };
+  authError?: string;
 }
 
-declare interface LoginPayLoad{
-  userName : string,
-password : string
+declare interface LoginPayLoad {
+  userName: string;
+  password: string;
 }
-
