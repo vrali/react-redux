@@ -9,10 +9,7 @@ import { styles} from "./Navigation.style";
 import SideBar from "./SideBar";
 import AccountMenu from "./AccountMenu";
 import Roster from "../../roster/components/Roster";
-import Account from "../../account/containers/accountContainer"
 import { Link } from 'react-router-dom';
-// import Login from "../Account/Login";
-// import Register from "../Account/Register";
 
 interface Props{
   auth : Auth
@@ -54,7 +51,7 @@ class Navigation extends React.Component<Props & WithStyles<"root"|"appFrame"|"b
                 App
               </Typography>                   
              {!auth.isAuthenticated && <Link to="/login"><Button variant="flat" color="secondary">
-            Logi</Button></Link>}          
+            Login</Button></Link>}          
              {auth.isAuthenticated &&<AccountMenu></AccountMenu>}
             </Toolbar>
           </AppBar>

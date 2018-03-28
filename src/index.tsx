@@ -9,7 +9,7 @@ import { RootState } from './app/rootReducer';
 
 
 const initialState : RootState = {
-  account : {
+  auth : {
     isAuthenticated : false,
     claims : {
       isAdmin : false
