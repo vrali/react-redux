@@ -7,6 +7,7 @@ import { RootState } from "../rootReducer";
 import Navigation from "../components/Navigation";
 import { AppBar, Toolbar, IconButton, createMuiTheme } from "material-ui";
 import { MuiThemeProvider } from "material-ui/styles";
+import * as UserActions from "../../user/actionCreators/userActionCreator"
 
 import { PaletteOptions } from "material-ui/styles/createPalette";
 import Roster from "../../roster/components/Roster";
@@ -43,7 +44,7 @@ export class App extends React.Component<App.Props, App.State> {
     const { children } = this.props;
     return (
       <MuiThemeProvider theme={theme}>
-        <Navigation user={this.props.user}>
+        <Navigation user={this.props.user} {...this.props}>
           <Routes {...this.props} />
         </Navigation>
       </MuiThemeProvider>
@@ -58,5 +59,7 @@ function mapStateToProps(state: RootState) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {};
+  return  {
+    userActions: bindActionCreators(UserActions, dispatch)
+  };
 }

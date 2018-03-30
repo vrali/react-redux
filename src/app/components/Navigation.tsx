@@ -106,7 +106,7 @@ class Navigation extends React.Component<
                   </Button>
                 </Link>
               )}
-              {user.isAuthenticated && <AccountMenu />}
+              {user.isAuthenticated && <AccountMenu {...this.props} />}
             </Toolbar>
           </AppBar>
 

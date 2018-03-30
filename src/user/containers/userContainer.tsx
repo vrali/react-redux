@@ -8,11 +8,12 @@ import Register from "../components/Register";
 import { Redirect, Route, withRouter } from "react-router";
 import * as UserActions from "../actionCreators/userActionCreator";
 import { Switch } from "react-router-dom";
+import * as cookie from "react-cookie";
 
 export { Login, Register };
 interface Props {
   user?: User;
-  userActions?: { login: (credentials: LoginPayLoad) => Promise<void> };
+  userActions?: { login: (credentials: LoginPayLoad) => Promise<User> };
 }
 
 interface State {
@@ -32,7 +33,8 @@ class User_Container extends React.Component<
   componentWillMount() {}
 
   handleLogin(userName, password) {
-    this.props.userActions.login({ userName, password }).then(() => {
+    this.props.userActions.login({ userName, password }).then((user: User) => {  
+      localStorage.setItem("user",JSON.stringify(user));
       this.setState({ redirectToReferrer: true });
     });
   }
@@ -43,7 +45,7 @@ class User_Container extends React.Component<
 
   render() {
     const { from } = this.props.location.state || {
-      from: { pathName: "/" }
+      from: { pathname: "/" }
     };
     const { history, user } = this.props;
 
@@ -54,7 +56,7 @@ class User_Container extends React.Component<
           render={props => (
             <Login
               {...props}
-              referrerLocation={from.pathName}
+              referrerLocation={from.pathname}
               authenticated={user.isAuthenticated}
               handleLogin={this.handleLogin}
               redirectToRegister={this.redirectToRegister}
@@ -78,6 +80,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export const UserContainer = withRouter(
+export const UserContainer = cookie.withCookies(withRouter(
   connect<Props>(mapStateToProps, mapDispatchToProps)(User_Container)
-);
+));

@@ -1,19 +1,19 @@
 
 import * as React from 'react';
 import * as classNames from 'classnames';
-import {Card,CardActions,CardMedia,CardHeader, Theme, Drawer, AppBar, Toolbar, List, ListItem, Typography, Divider, IconButton, withStyles, WithStyles, Button, ListItemIcon, ListItemText, Menu, MenuItem, ClickAwayListener, Grow, Paper, MenuList, GridList, GridListTile } from 'material-ui';
+import {Card,CardActions,CardMedia,CardHeader, Theme, Drawer, AppBar, Toolbar, List, ListItem, Typography, Divider, IconButton, withStyles, WithStyles, Button, ListItemIcon, ListItemText, Menu, MenuItem, ClickAwayListener, Grow, Paper, MenuList, GridList, GridListTile, StyleRulesCallback } from 'material-ui';
 import {ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon, Menu as MenuIcon, 
   Inbox as InboxIcon, Star as StarIcon, Send as SendIcon, Drafts as DraftsIcon, AccountCircle as AccountCircleIcon } from 'material-ui-icons';
 import { Manager, Target, Popper } from 'react-popper';
 import * as Dropzone from "react-dropzone";
-import { IStyle, styles} from "./AccountMenu.style";
-import SideBar from "./SideBar";
+import { styles} from "./AccountMenu.style";
 
 interface Props{
-
 }
 
-class AccountMenu extends React.Component<Props & WithStyles> {
+class AccountMenu extends React.Component<Props & WithStyles<
+"popperClose" | "profileButton"
+>> {
   state = {
     openProfileMenu : false
   };
@@ -22,14 +22,18 @@ class AccountMenu extends React.Component<Props & WithStyles> {
   handleMenu = event => {
     this.setState({ openProfileMenu: !this.state.openProfileMenu });
   };
+  handleLogOut = ()=>{
+    localStorage.removeItem("user");
+    (this.props as any).userActions.logout();
+    this.handleClose();
+    }
   handleClose = () => {
     if (!this.state.openProfileMenu) {
       return;
     }
-
     // setTimeout to ensure a close event comes after a target click event
     this.timeout = setTimeout(() => {
-      this.setState({ open: false });
+      this.setState({ openProfileMenu: false });
     });
   };
   componentWillUnmount() {
@@ -37,7 +41,7 @@ class AccountMenu extends React.Component<Props & WithStyles> {
   }  
   render() {
     const theme = this.props.theme as Theme;
-    const classes = (this.props as any).classes as IStyle
+    const classes = this.props.classes
     const openProfileMenu = this.state.openProfileMenu;
 
     return (                             
@@ -61,7 +65,7 @@ class AccountMenu extends React.Component<Props & WithStyles> {
                         <MenuList role="menu">
                           <MenuItem onClick={this.handleClose}>Profile</MenuItem>
                           <MenuItem onClick={this.handleClose}>My account</MenuItem>
-                          <MenuItem onClick={this.handleClose}>Logout</MenuItem>
+                          <MenuItem onClick={this.handleLogOut}>Logout</MenuItem>
                         </MenuList>
                       </Paper>
                     </Grow>
@@ -71,6 +75,7 @@ class AccountMenu extends React.Component<Props & WithStyles> {
     ); 
   }
 }
-const decorate = withStyles(styles ,{withTheme:true})
 
-export default  decorate(AccountMenu as any);
+const decorate = withStyles(styles as StyleRulesCallback ,{withTheme:true})
+
+export default  decorate<Props>(AccountMenu);
