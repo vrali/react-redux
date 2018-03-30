@@ -1,5 +1,5 @@
 import { combineReducers, Reducer } from "redux";
-import loginReducer from "../user/reducers/loginReducer";
+import userReducer from "../user/reducers/userReducer";
 import appReducer from "./reducers/appReducer";
 
 export interface RootState {
@@ -7,6 +7,6 @@ export interface RootState {
 }
 
 export default combineReducers<RootState>({
-  user: loginReducer,
+  user: userReducer,
   app: appReducer
 });

@@ -6,20 +6,20 @@ import { RootState } from "../../app/rootReducer";
 import Login from "../components/Login";
 import Register from "../components/Register";
 import { Redirect, Route, withRouter } from "react-router";
-import * as LoginActions from "../actionCreators/loginActions";
+import * as UserActions from "../actionCreators/userActionCreator";
 import { Switch } from "react-router-dom";
 
 export { Login, Register };
 interface Props {
   user?: User;
-  loginActions?: { login: (credentials: LoginPayLoad) => Promise<void> };
+  userActions?: { login: (credentials: LoginPayLoad) => Promise<void> };
 }
 
 interface State {
   redirectToReferrer: boolean;
 }
 
-class Login_Container extends React.Component<
+class User_Container extends React.Component<
   Props & RouteComponentProps<any>,
   State
 > {
@@ -27,12 +27,12 @@ class Login_Container extends React.Component<
     super(props);
     this.handleLogin = this.handleLogin.bind(this);
     this.redirectToRegister = this.redirectToRegister.bind(this);
-    this.state = {
-      redirectToReferrer: false
-    };
   }
+
+  componentWillMount() {}
+
   handleLogin(userName, password) {
-    this.props.loginActions.login({ userName, password }).then(() => {
+    this.props.userActions.login({ userName, password }).then(() => {
       this.setState({ redirectToReferrer: true });
     });
   }
@@ -42,25 +42,26 @@ class Login_Container extends React.Component<
   componentWillReceiveProps(nextProps: Readonly<Props>) {}
 
   render() {
-    const { from } = this.props.location.state || { from: { pathName: "/" } };
-    if (this.state.redirectToReferrer) {
-      return <Redirect to={from} from="/login" path="/" />;
-    }
+    const { from } = this.props.location.state || {
+      from: { pathName: "/" }
+    };
+    const { history, user } = this.props;
+
     return (
       <div>
-        <Switch>
-          <Route
-            path="/login"
-            render={props => (
-              <Login
-                {...props}
-                handleLogin={this.handleLogin}
-                redirectToRegister={this.redirectToRegister}
-              />
-            )}
-          />
-          <Route path="/register" render={props => <Register />} />
-        </Switch>
+        <Route
+          path="/login"
+          render={props => (
+            <Login
+              {...props}
+              referrerLocation={from.pathName}
+              authenticated={user.isAuthenticated}
+              handleLogin={this.handleLogin}
+              redirectToRegister={this.redirectToRegister}
+            />
+          )}
+        />
+        <Route path="/register" render={props => <Register />} />
       </div>
     );
   }
@@ -73,10 +74,10 @@ function mapStateToProps(state: RootState) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    loginActions: bindActionCreators(LoginActions, dispatch)
+    userActions: bindActionCreators(UserActions, dispatch)
   };
 }
 
-export const LoginContainer = withRouter(
-  connect<Props>(mapStateToProps, mapDispatchToProps)(Login_Container)
+export const UserContainer = withRouter(
+  connect<Props>(mapStateToProps, mapDispatchToProps)(User_Container)
 );

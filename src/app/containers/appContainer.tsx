@@ -10,11 +10,7 @@ import { MuiThemeProvider } from "material-ui/styles";
 
 import { PaletteOptions } from "material-ui/styles/createPalette";
 import Roster from "../../roster/components/Roster";
-import {
-  LoginContainer,
-  Login,
-  Register
-} from "../../user/containers/loginContainer";
+import { Routes } from "./routes";
 
 const theme = createMuiTheme({
   palette: {
@@ -48,14 +44,7 @@ export class App extends React.Component<App.Props, App.State> {
     return (
       <MuiThemeProvider theme={theme}>
         <Navigation user={this.props.user}>
-          <Switch>
-            <PrivateRoute
-              path="/roster"
-              user={this.props.user}
-              component={Roster}
-            />
-            <Route component={LoginContainer} />
-          </Switch>
+          <Routes {...this.props} />
         </Navigation>
       </MuiThemeProvider>
     );
@@ -71,21 +60,3 @@ function mapStateToProps(state: RootState) {
 function mapDispatchToProps(dispatch) {
   return {};
 }
-
-const PrivateRoute = ({ component: Component, user: user, ...rest }) => (
-  <Route
-    {...rest}
-    render={props =>
-      user.isAuthenticated ? (
-        <Component {...props} />
-      ) : (
-        <Redirect
-          to={{
-            pathname: "/login",
-            state: { from: props.location }
-          }}
-        />
-      )
-    }
-  />
-);
