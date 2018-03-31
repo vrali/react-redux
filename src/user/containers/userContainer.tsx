@@ -8,12 +8,14 @@ import Register from "../components/Register";
 import { Redirect, Route, withRouter } from "react-router";
 import * as UserActions from "../actionCreators/userActionCreator";
 import { Switch } from "react-router-dom";
-import * as cookie from "react-cookie";
 
 export { Login, Register };
 interface Props {
   user?: User;
-  userActions?: { login: (credentials: LoginPayLoad) => Promise<User> };
+  userActions?: {
+    login: (credentials: LoginPayLoad) => Promise<User>;
+    logout: () => void;
+  };
 }
 
 interface State {
@@ -27,16 +29,21 @@ class User_Container extends React.Component<
   constructor(props) {
     super(props);
     this.handleLogin = this.handleLogin.bind(this);
+    this.handleLogOut = this.handleLogOut.bind(this);
     this.redirectToRegister = this.redirectToRegister.bind(this);
   }
 
   componentWillMount() {}
 
   handleLogin(userName, password) {
-    this.props.userActions.login({ userName, password }).then((user: User) => {  
-      localStorage.setItem("user",JSON.stringify(user));
+    this.props.userActions.login({ userName, password }).then((user: User) => {
+      localStorage.setItem("user", JSON.stringify(user));
       this.setState({ redirectToReferrer: true });
     });
+  }
+  handleLogOut() {
+    localStorage.removeItem("user");
+    this.props.userActions.logout();
   }
   redirectToRegister() {
     this.props.history.push("/register");
@@ -64,6 +71,14 @@ class User_Container extends React.Component<
           )}
         />
         <Route path="/register" render={props => <Register />} />
+        <Route
+          path="/logout"
+          render={props => {
+            this.handleLogOut();
+            return <Redirect to="/" />;
+          }}
+        />
+        <Route path="/profile" render={props => <Register />} />
       </div>
     );
   }
@@ -80,6 +95,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export const UserContainer = cookie.withCookies(withRouter(
+export const UserContainer = withRouter(
   connect<Props>(mapStateToProps, mapDispatchToProps)(User_Container)
-));
+);

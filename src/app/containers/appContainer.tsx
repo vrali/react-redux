@@ -7,11 +7,11 @@ import { RootState } from "../rootReducer";
 import Navigation from "../components/Navigation";
 import { AppBar, Toolbar, IconButton, createMuiTheme } from "material-ui";
 import { MuiThemeProvider } from "material-ui/styles";
-import * as UserActions from "../../user/actionCreators/userActionCreator"
-
+import * as UserActions from "../../user/actionCreators/userActionCreator";
 import { PaletteOptions } from "material-ui/styles/createPalette";
 import Roster from "../../roster/components/Roster";
-import { Routes } from "./routes";
+import { UserContainer } from "../../user/containers/userContainer";
+import { PrivateRoute } from "../../common/components/privateRoute";
 
 const theme = createMuiTheme({
   palette: {
@@ -45,7 +45,14 @@ export class App extends React.Component<App.Props, App.State> {
     return (
       <MuiThemeProvider theme={theme}>
         <Navigation user={this.props.user} {...this.props}>
-          <Routes {...this.props} />
+          <Switch>
+            <PrivateRoute
+              path="/roster"
+              user={this.props.user}
+              component={Roster}
+            />
+            <Route component={UserContainer} />
+          </Switch>
         </Navigation>
       </MuiThemeProvider>
     );
@@ -59,7 +66,7 @@ function mapStateToProps(state: RootState) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return  {
+  return {
     userActions: bindActionCreators(UserActions, dispatch)
   };
 }

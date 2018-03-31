@@ -7,7 +7,6 @@ import { configureStore } from "./app/store";
 import { App } from "./App/containers/appContainer";
 import { RootState } from "./app/rootReducer";
 import { loginSuccess } from "./user/actionCreators/userActionCreator";
-import { CookiesProvider } from 'react-cookie';
 
 const store = configureStore();
 const history = createBrowserHistory();
@@ -19,11 +18,9 @@ const history = createBrowserHistory();
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-    <CookiesProvider>
       <Switch>
         <Route path="/" component={App} />
       </Switch>
-      </CookiesProvider>
     </BrowserRouter>
   </Provider>,
   document.getElementById("root")
