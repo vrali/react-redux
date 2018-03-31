@@ -18,9 +18,7 @@ interface Props {
   };
 }
 
-interface State {
-  redirectToReferrer: boolean;
-}
+interface State {}
 
 class User_Container extends React.Component<
   Props & RouteComponentProps<any>,
@@ -38,7 +36,6 @@ class User_Container extends React.Component<
   handleLogin(userName, password) {
     this.props.userActions.login({ userName, password }).then((user: User) => {
       localStorage.setItem("user", JSON.stringify(user));
-      this.setState({ redirectToReferrer: true });
     });
   }
   handleLogOut() {
@@ -74,7 +71,9 @@ class User_Container extends React.Component<
         <Route
           path="/logout"
           render={props => {
-            this.handleLogOut();
+            setTimeout(() => {
+              this.handleLogOut();
+            });
             return <Redirect to="/" />;
           }}
         />
