@@ -28,10 +28,13 @@ class User_Container extends React.Component<
     super(props);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
+    this.handleRegister = this.handleRegister.bind(this);
     this.redirectToRegister = this.redirectToRegister.bind(this);
   }
 
   componentWillMount() {}
+
+  handleRegister(user: User) {}
 
   handleLogin(userName, password) {
     this.props.userActions.login({ userName, password });
@@ -71,10 +74,8 @@ class User_Container extends React.Component<
           render={props => (
             <Register
               {...props}
-              referrerLocation={from.pathname}
               authenticated={user.isAuthenticated}
-              handleLogin={this.handleLogin}
-              redirectToRegister={this.redirectToRegister}
+              handleRegister={this.handleRegister}
             />
           )}
         />

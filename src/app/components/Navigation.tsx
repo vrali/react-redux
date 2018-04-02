@@ -36,7 +36,7 @@ import {
 } from "material-ui-icons";
 import { Manager, Target, Popper } from "react-popper";
 import * as Dropzone from "react-dropzone";
-import { styles } from "./Navigation.style";
+import { NavigationStyle, styles } from "./Navigation.style";
 import SideBar from "./SideBar";
 import AccountMenu from "./AccountMenu";
 import Roster from "../../roster/components/Roster";
@@ -48,19 +48,7 @@ interface Props {
 
 const decorate = withStyles(styles as StyleRulesCallback, { withTheme: true });
 
-class Navigation extends React.Component<
-  Props &
-    WithStyles<
-      | "root"
-      | "appFrame"
-      | "brand"
-      | "appBar"
-      | "appBarShift"
-      | "menuButton"
-      | "hide"
-      | "content"
-    >
-> {
+class Navigation extends React.Component<Props & WithStyles<NavigationStyle>> {
   state = {
     openDrawer: false
   };

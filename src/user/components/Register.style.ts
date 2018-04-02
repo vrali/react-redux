@@ -1,5 +1,14 @@
 import { Theme } from "material-ui";
 
+interface IStyle {
+  container: any;
+  textField: any;
+  loginForm: any;
+  buttonContainer: any;
+}
+
+export type RegisterStyle = keyof IStyle;
+
 export const styles = (theme: Theme) => ({
   container: {
     display: "flex",

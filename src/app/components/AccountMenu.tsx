@@ -41,13 +41,13 @@ import {
 } from "material-ui-icons";
 import { Manager, Target, Popper } from "react-popper";
 import * as Dropzone from "react-dropzone";
-import { styles } from "./AccountMenu.style";
+import { AccountMenuStyle, styles } from "./AccountMenu.style";
 import { Link } from "react-router-dom";
 
 interface Props {}
 
 class AccountMenu extends React.Component<
-  Props & WithStyles<"popperClose" | "profileButton">
+  Props & WithStyles<AccountMenuStyle>
 > {
   state = {
     openProfileMenu: false

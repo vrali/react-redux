@@ -2,28 +2,38 @@ import * as React from "react";
 import {
   WithStyles,
   TextField,
+  Checkbox,
+  Select,
   Button,
   withStyles,
   Paper,
-  StyleRulesCallback
+  Divider,
+  StyleRulesCallback,
+  Input,
+  InputLabel,
+  FormControl,
+  FormHelperText
 } from "material-ui";
-import { styles } from "./Register.style";
+import { FormComponent } from "../../common/components/formComponent";
+import { RegisterStyle, styles } from "./Register.style";
 import { Redirect } from "react-router-dom";
 
 interface Props {
-  handleLogin: (userName, password) => void;
-  redirectToRegister: () => void;
+  handleRegister: (userName, password) => void;
   authenticated: boolean;
-  referrerLocation: string;
+}
+interface State {
+  userName?: string;
+  password?: string;
 }
 
 class Register extends React.Component<
-  Props &
-    WithStyles<"container" | "textField" | "loginForm" | "buttonContainer">
+  Props & WithStyles<RegisterStyle>,
+  State
 > {
   redirectIfAuthenticated() {
     if (this.props.authenticated) {
-      return <Redirect to={this.props.referrerLocation} />;
+      return <Redirect to="/" />;
     }
   }
   handleClick() {}
