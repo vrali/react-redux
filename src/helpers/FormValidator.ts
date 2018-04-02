@@ -5,9 +5,10 @@ export class FormClientValidator {
   private _result: ValidationResult;
 
   get validationState(): ValidationResult {
+    //if state not already present then send an initial state with
+    //invalid formlevel state and valid field level state
     if (!this._result) {
       const validation = {};
-
       this.validations.map(
         rule =>
           (validation[rule.field] = {
@@ -20,32 +21,9 @@ export class FormClientValidator {
     }
     return this._result;
   }
-
-  validate(state, fieldName): ValidationResult {
-    let validation = this.validationState;
+  _validate = () => {
     let isValid = true;
-    let atleastOneRuleInvalid = false;
-    let fieldValidationRules = this.validations.filter(
-      rule => rule.field === fieldName
-    );
-    fieldValidationRules.forEach((rule: ValidationRule) => {
-      const field_value = (state[rule.field] || "").toString();
-      const args = rule.args || [];
-      const validation_method =
-        typeof rule.method === "string" ? validator[rule.method] : rule.method;
-      let messages = atleastOneRuleInvalid
-        ? validation[rule.field].messages
-        : [];
-      if (validation_method(field_value, ...args, state) != rule.validWhen) {
-        atleastOneRuleInvalid = true;
-        messages.push(rule.message);
-      }
-      validation[rule.field] = {
-        isDirty: true,
-        isInvalid: atleastOneRuleInvalid,
-        messages: messages
-      };
-    });
+    let validation = this.validationState;
     for (var prop in validation) {
       if (validation.hasOwnProperty(prop) && prop != "isValid") {
         if (
@@ -66,8 +44,38 @@ export class FormClientValidator {
       }
     }
     validation.isValid = isValid;
-    return validation;
-  }
+  };
+
+  validate = (state, fieldName?: string): ValidationResult => {
+    if (state && fieldName) {
+      let atleastOneRuleInvalid = false;
+      let fieldValidationRules = this.validations.filter(
+        rule => rule.field === fieldName
+      );
+      fieldValidationRules.forEach((rule: ValidationRule) => {
+        const field_value = (state[rule.field] || "").toString();
+        const args = rule.args || [];
+        const validation_method =
+          typeof rule.method === "string"
+            ? validator[rule.method]
+            : rule.method;
+        let messages = atleastOneRuleInvalid
+          ? this.validationState[rule.field].messages
+          : [];
+        if (validation_method(field_value, ...args, state) != rule.validWhen) {
+          atleastOneRuleInvalid = true;
+          messages.push(rule.message);
+        }
+        this.validationState[rule.field] = {
+          isDirty: true,
+          isInvalid: atleastOneRuleInvalid,
+          messages: messages
+        };
+      });
+    }
+    this._validate();
+    return this.validationState;
+  };
   addValidationRule = (rule: ValidationRule): FormClientValidator => {
     this.validations.push(rule);
     return this;
@@ -94,7 +102,9 @@ export class FormClientValidator {
     });
     return this;
   };
-  addPasswordRequiredValidation = (passwordField?: string) => {
+  addPasswordRequiredValidation = (
+    passwordField?: string
+  ): FormClientValidator => {
     let field = passwordField || "password";
     this.validations.push({
       field,
@@ -106,7 +116,9 @@ export class FormClientValidator {
     return this;
   };
 
-  addPasswordComplexityValidation = (passwordField?: string) => {
+  addPasswordComplexityValidation = (
+    passwordField?: string
+  ): FormClientValidator => {
     let field = passwordField || "password";
     this.validations.push({
       field,
@@ -131,5 +143,25 @@ export class FormClientValidator {
       validWhen: true
     });
     return this;
+  };
+  addFieldValidationToResult = (
+    field: string,
+    fieldResult: FieldValidationResult
+  ): void => {
+    if (this._result.hasOwnProperty(field)) {
+      fieldResult.messages = fieldResult.messages || [];
+      fieldResult.messages.push(...this._result[field].messages);
+      Object.assign(this._result[field], fieldResult);
+    } else {
+      this._result[field] = Object.assign(
+        {
+          isDirty: true,
+          isInvalid: false,
+          messages: []
+        },
+        fieldResult
+      );
+    }
+    this.validate(this.validationState);
   };
 }

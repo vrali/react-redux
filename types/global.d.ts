@@ -5,13 +5,13 @@ declare module "*.scss" {
   const styles: any;
   export = styles;
 }
-
+declare interface FieldValidationResult {
+  isDirty?: boolean;
+  isInvalid: boolean;
+  messages?: string[];
+}
 declare interface ValidationFieldResult {
-  [name: string]: {
-    isDirty?: boolean;
-    isInvalid?: boolean;
-    messages?: string[];
-  };
+  [name: string]: FieldValidationResult;
 }
 declare type ValidationResult = ValidationBaseResult & ValidationFieldResult;
 declare interface ValidationBaseResult {
