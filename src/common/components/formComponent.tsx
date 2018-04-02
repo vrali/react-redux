@@ -6,6 +6,7 @@ export class FormComponent<P, S> extends React.Component<
   S & { validations: ValidationResult }
 > {
   public validator: FormClientValidator;
+  stateKeys: S;
   constructor(props, context?) {
     super(props, context);
     this.validator = new FormClientValidator();

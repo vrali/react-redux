@@ -14,7 +14,7 @@ import {
   FormControl,
   FormHelperText
 } from "material-ui";
-import { styles } from "./Login.style";
+import { styles, LoginStyle } from "./Login.style";
 import { Redirect } from "react-router";
 import { FormComponent } from "../../common/components/formComponent";
 
@@ -28,18 +28,12 @@ interface State {
   userName?: string;
   password?: string;
 }
-
-class Login extends FormComponent<
-  Props &
-    WithStyles<
-      "container" | "textField" | "loginForm" | "buttonContainer" | "divider"
-    >,
-  State
-> {
+class Login extends FormComponent<Props & WithStyles<LoginStyle>, State> {
   constructor(props) {
     super(props);
+    this.stateKeys = { userName: "userName", password: "password" };
     this.validator
-      .addEmailValidation("userName", true)
+      .addEmailValidation(this.stateKeys.userName, true)
       .addPasswordRequiredValidation();
     this.state = { validations: this.validator.validationState };
   }
@@ -53,8 +47,10 @@ class Login extends FormComponent<
   render() {
     let { handleLogin, theme, classes } = this.props;
     let { userName, password } = this.state;
-    let invalidPassword = this.state.validations["password"].isInvalid;
-    let invalidEmail = this.state.validations["userName"].isInvalid;
+    let invalidPassword = this.state.validations[this.stateKeys.password]
+      .isInvalid;
+    let invalidEmail = this.state.validations[this.stateKeys.userName]
+      .isInvalid;
 
     return (
       <div>
@@ -62,15 +58,15 @@ class Login extends FormComponent<
         <form className={classes.loginForm} noValidate autoComplete="off">
           <Paper className={classes.container}>
             <FormControl required={true} error={invalidEmail}>
-              <InputLabel htmlFor="userName">Email</InputLabel>
+              <InputLabel htmlFor={this.stateKeys.userName}>Email</InputLabel>
               <Input
-                id="userName"
+                id={this.stateKeys.userName}
                 className={classes.textField}
-                name="userName"
+                name={this.stateKeys.userName}
                 onBlur={this.handleInputChange}
               />
               {invalidEmail &&
-                this.state.validations["userName"].messages.map(
+                this.state.validations[this.stateKeys.userName].messages.map(
                   (message, index) => (
                     <FormHelperText key={index} error>
                       {message}
@@ -80,17 +76,19 @@ class Login extends FormComponent<
             </FormControl>
             <br />
             <FormControl required={true}>
-              <InputLabel htmlFor="password">Password</InputLabel>
+              <InputLabel htmlFor={this.stateKeys.password}>
+                Password
+              </InputLabel>
               <Input
-                id="password"
+                id={this.stateKeys.password}
                 type="password"
                 className={classes.textField}
-                name="password"
+                name={this.stateKeys.password}
                 onChange={this.handleInputChange}
                 onBlur={this.handleInputChange}
               />
               {invalidPassword &&
-                this.state.validations["password"].messages.map(
+                this.state.validations[this.stateKeys.password].messages.map(
                   (message, index) => (
                     <FormHelperText key={index} error>
                       {message}
