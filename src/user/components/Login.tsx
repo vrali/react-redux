@@ -2,14 +2,21 @@ import * as React from "react";
 import {
   WithStyles,
   TextField,
+  Checkbox,
+  Select,
   Button,
   withStyles,
   Paper,
   Divider,
-  StyleRulesCallback
+  StyleRulesCallback,
+  Input,
+  InputLabel,
+  FormControl,
+  FormHelperText
 } from "material-ui";
 import { styles } from "./Login.style";
 import { Redirect } from "react-router";
+import { FormComponent } from "../../common/components/formComponent";
 
 interface Props {
   handleLogin: (userName, password) => void;
@@ -17,15 +24,24 @@ interface Props {
   authenticated: boolean;
   referrerLocation: string;
 }
+interface State {
+  userName?: string;
+  password?: string;
+}
 
-class Login extends React.Component<
+class Login extends FormComponent<
   Props &
     WithStyles<
       "container" | "textField" | "loginForm" | "buttonContainer" | "divider"
-    >
+    >,
+  State
 > {
   constructor(props) {
     super(props);
+    this.validator
+      .addEmailValidation("userName", true)
+      .addPasswordRequiredValidation();
+    this.state = { validations: this.validator.validationState };
   }
 
   redirectIfAuthenticated() {
@@ -34,44 +50,60 @@ class Login extends React.Component<
     }
   }
 
-  updateCredentialsState(event: React.ChangeEvent<HTMLInputElement>) {
-    const field = event.target.name;
-    this.state[field] = event.target.value;
-  }
-
   render() {
-    const theme = this.props.theme;
-    const classes = this.props.classes;
-    let { handleLogin } = this.props;
+    let { handleLogin, theme, classes } = this.props;
+    let { userName, password } = this.state;
+    let invalidPassword = this.state.validations["password"].isInvalid;
+    let invalidEmail = this.state.validations["userName"].isInvalid;
 
     return (
       <div>
         {this.redirectIfAuthenticated()}
         <form className={classes.loginForm} noValidate autoComplete="off">
           <Paper className={classes.container}>
-            <TextField
-              id="with-placeholder"
-              label="Email"
-              placeholder="Email"
-              className={classes.textField}
-              margin="normal"
-              onChange={this.updateCredentialsState}
-            />
+            <FormControl required={true} error={invalidEmail}>
+              <InputLabel htmlFor="userName">Email</InputLabel>
+              <Input
+                id="userName"
+                className={classes.textField}
+                name="userName"
+                onBlur={this.handleInputChange}
+              />
+              {invalidEmail &&
+                this.state.validations["userName"].messages.map(
+                  (message, index) => (
+                    <FormHelperText key={index} error>
+                      {message}
+                    </FormHelperText>
+                  )
+                )}
+            </FormControl>
             <br />
-            <TextField
-              id="password"
-              label="Password"
-              className={classes.textField}
-              type="password"
-              autoComplete="current-password"
-              margin="normal"
-              onChange={this.updateCredentialsState}
-            />
+            <FormControl required={true}>
+              <InputLabel htmlFor="password">Password</InputLabel>
+              <Input
+                id="password"
+                type="password"
+                className={classes.textField}
+                name="password"
+                onChange={this.handleInputChange}
+                onBlur={this.handleInputChange}
+              />
+              {invalidPassword &&
+                this.state.validations["password"].messages.map(
+                  (message, index) => (
+                    <FormHelperText key={index} error>
+                      {message}
+                    </FormHelperText>
+                  )
+                )}
+            </FormControl>
             <div className={classes.buttonContainer}>
               <Button
                 variant="raised"
                 color="secondary"
-                onClick={event => this.props.handleLogin("", "")}
+                onClick={event => this.props.handleLogin(userName, password)}
+                disabled={!this.state.validations.isValid}
               >
                 Login
               </Button>

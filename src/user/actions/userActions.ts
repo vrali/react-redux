@@ -12,6 +12,9 @@ export const login = (credentials: LoginPayLoad) => {
       setTimeout(() => {
         let user = {
           isAuthenticated: true,
+          emailAddress : "vinay@gmail.com",
+          firstName : "Vinay",
+          lastName : "Rali",
           claims: {
             isAdmin: false
           }

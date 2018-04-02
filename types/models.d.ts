@@ -14,10 +14,18 @@ declare type TodoFilterType = "SHOW_ALL" | "SHOW_ACTIVE" | "SHOW_COMPLETED";
 
 declare interface User {
   isAuthenticated: boolean;
+  firstName: String;
+  lastName: String;
+  emailAddress: String;
   claims?: {
     isAdmin: boolean;
   };
   authError?: string;
+}
+
+declare interface AuthResponse {
+  token: string;
+  user: User;
 }
 
 declare interface LoginPayLoad {

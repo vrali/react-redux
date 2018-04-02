@@ -6,7 +6,8 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --debug --devtool cheap-module-source-map --output-pathinfo --history-api-fallback --hot --inline --progress --colors --port 3000 --open",
+    "start":
+      "webpack-dev-server --debug --devtool cheap-module-source-map --output-pathinfo --history-api-fallback --hot --inline --progress --colors --port 3000 --open",
     "build": "rimraf ./dist && webpack -p --progress --colors"
   },
   "license": "MIT",
@@ -26,6 +27,7 @@
     "@types/react-router-dom": "4.2.4",
     "@types/redux-actions": "2.2.2",
     "@types/redux-thunk": "^2.1.0",
+    "@types/validator": "9.4.0",
     "@types/webpack": "3.8.1",
     "@types/webpack-env": "1.13.2",
     "awesome-typescript-loader": "^3.4.0",
@@ -50,7 +52,7 @@
     "typescript": "^2.6.1",
     "url-loader": "^0.6.2",
     "webpack": "^3.8.1",
-    "webpack-dev-server": "^2.9.4"
+    "webpack-dev-server": "2.9.4"
   },
   "dependencies": {
     "bcrypt": "^1.0.3",
@@ -69,6 +71,8 @@
     "redux": "3.7.2",
     "redux-actions": "2.2.1",
     "redux-thunk": "^2.2.0",
-    "typeface-roboto": "0.0.54"
+    "typeface-roboto": "0.0.54",
+    "validator": "^9.4.1",
+    "whatwg-fetch": "2.0.4"
   }
 }

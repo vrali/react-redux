@@ -6,19 +6,19 @@ import { RootState } from "../../app/rootReducer";
 import Login from "../components/Login";
 import Register from "../components/Register";
 import { Redirect, Route, withRouter } from "react-router";
-import * as UserActions from "../actionCreators/userActionCreator";
+import * as UserActions from "../actions/userActions";
 import { Switch } from "react-router-dom";
-import * as cookie from "react-cookie";
 
 export { Login, Register };
 interface Props {
   user?: User;
-  userActions?: { login: (credentials: LoginPayLoad) => Promise<User> };
+  userActions?: {
+    login: (credentials: LoginPayLoad) => Promise<User>;
+    logout: () => void;
+  };
 }
 
-interface State {
-  redirectToReferrer: boolean;
-}
+interface State {}
 
 class User_Container extends React.Component<
   Props & RouteComponentProps<any>,
@@ -27,16 +27,19 @@ class User_Container extends React.Component<
   constructor(props) {
     super(props);
     this.handleLogin = this.handleLogin.bind(this);
+    this.handleLogOut = this.handleLogOut.bind(this);
     this.redirectToRegister = this.redirectToRegister.bind(this);
   }
 
   componentWillMount() {}
 
   handleLogin(userName, password) {
-    this.props.userActions.login({ userName, password }).then((user: User) => {  
-      localStorage.setItem("user",JSON.stringify(user));
-      this.setState({ redirectToReferrer: true });
-    });
+    this.props.userActions.login({ userName, password });
+  }
+  handleLogOut() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    this.props.userActions.logout();
   }
   redirectToRegister() {
     this.props.history.push("/register");
@@ -63,7 +66,28 @@ class User_Container extends React.Component<
             />
           )}
         />
-        <Route path="/register" render={props => <Register />} />
+        <Route
+          path="/register"
+          render={props => (
+            <Register
+              {...props}
+              referrerLocation={from.pathname}
+              authenticated={user.isAuthenticated}
+              handleLogin={this.handleLogin}
+              redirectToRegister={this.redirectToRegister}
+            />
+          )}
+        />
+        <Route
+          path="/logout"
+          render={props => {
+            setTimeout(() => {
+              this.handleLogOut();
+            });
+            return <Redirect to="/" />;
+          }}
+        />
+        <Route path="/profile" render={props => null} />
       </div>
     );
   }
@@ -80,6 +104,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export const UserContainer = cookie.withCookies(withRouter(
+export const UserContainer = withRouter(
   connect<Props>(mapStateToProps, mapDispatchToProps)(User_Container)
-));
+);
