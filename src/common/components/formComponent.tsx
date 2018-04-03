@@ -19,15 +19,31 @@ export class FormComponent<P, S> extends React.Component<
       event.target.type === "checkbox"
         ? event.target.checked
         : event.target.value;
-    this.setState(
-      {
-        [name]: value
-      },
-      () => {
-        this.setState({
-          validations: this.validator.validate(this.state, name)
-        });
-      }
-    );
+    this.setState({
+      [name]: value
+    });
   };
+  updateValidationsInState() {
+    this.setState({
+      validations: { ...this.validator.validationState }
+    });
+  }
+  validateOnBlur = event => {
+    let name = event.target.name;
+    this.validator.validate(this.state, name);
+    this.updateValidationsInState();
+  };
+  validateBeforeSubmit = () => {
+    return new Promise((resolve, reject) => {
+      this.setState(
+        {
+          validations: {
+            ...this.validator.validate(this.state, Object.keys(this.stateKeys))
+          }
+        },
+        resolve
+      );
+    });
+  };
+  invalid;
 }

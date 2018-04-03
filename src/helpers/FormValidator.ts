@@ -17,7 +17,7 @@ export class FormClientValidator {
             isDirty: false
           })
       );
-      this._result = { isValid: false, ...validation } as any;
+      this._result = { isValid: true, ...validation } as any;
     }
     return this._result;
   }
@@ -46,32 +46,43 @@ export class FormClientValidator {
     validation.isValid = isValid;
   };
 
-  validate = (state, fieldName?: string): ValidationResult => {
-    if (state && fieldName) {
-      let atleastOneRuleInvalid = false;
-      let fieldValidationRules = this.validations.filter(
-        rule => rule.field === fieldName
-      );
-      fieldValidationRules.forEach((rule: ValidationRule) => {
-        const field_value = (state[rule.field] || "").toString();
-        const args = rule.args || [];
-        const validation_method =
-          typeof rule.method === "string"
-            ? validator[rule.method]
-            : rule.method;
-        let messages = atleastOneRuleInvalid
-          ? this.validationState[rule.field].messages
-          : [];
-        if (validation_method(field_value, ...args, state) != rule.validWhen) {
-          atleastOneRuleInvalid = true;
-          messages.push(rule.message);
-        }
-        this.validationState[rule.field] = {
-          isDirty: true,
-          isInvalid: atleastOneRuleInvalid,
-          messages: messages
-        };
-      });
+  _validateField(state, fieldName) {
+    let atleastOneRuleInvalid = false;
+    let fieldValidationRules = this.validations.filter(
+      rule => rule.field === fieldName
+    );
+    fieldValidationRules.forEach((rule: ValidationRule) => {
+      const field_value = (state[rule.field] || "").toString();
+      const args = rule.args || [];
+      const validation_method =
+        typeof rule.method === "string" ? validator[rule.method] : rule.method;
+      let messages = atleastOneRuleInvalid
+        ? this.validationState[rule.field].messages
+        : [];
+      if (validation_method(field_value, ...args, state) != rule.validWhen) {
+        atleastOneRuleInvalid = true;
+        messages.push(rule.message);
+      }
+      this.validationState[rule.field] = {
+        isDirty: true,
+        isInvalid: atleastOneRuleInvalid,
+        messages: messages
+      };
+    });
+  }
+
+  validate = (
+    state?: any,
+    fieldNames?: string | string[]
+  ): ValidationResult => {
+    if (state && fieldNames) {
+      if (Array.isArray(fieldNames)) {
+        fieldNames.forEach(fieldName => {
+          this._validateField(state, fieldName);
+        });
+      } else {
+        this._validateField(state, fieldNames);
+      }
     }
     this._validate();
     return this.validationState;
@@ -126,20 +137,18 @@ export class FormClientValidator {
       args: [/.{6,}/],
       message: "Password did not meet requirements",
       validWhen: true,
-      strict: false
+      strict: true
     });
     return this;
   };
-  addPasswordConfirmationValidation = (
-    confirmationPassword: string,
-    passwordField?: string
-  ): FormClientValidator => {
-    let field = passwordField || "password";
+
+  addMobilePhoneValidation = (phoneNumber?: string): FormClientValidator => {
+    let field = phoneNumber || "phoneNumber";
     this.validations.push({
       field,
-      method: validator.equals,
-      args: [confirmationPassword],
-      message: "Passwords do not Match",
+      method: validator.isMobilePhone,
+      args: ["en-US"],
+      message: "Enter Valid Phone Number",
       validWhen: true
     });
     return this;
@@ -149,8 +158,11 @@ export class FormClientValidator {
     fieldResult: FieldValidationResult
   ): void => {
     if (this._result.hasOwnProperty(field)) {
-      fieldResult.messages = fieldResult.messages || [];
-      fieldResult.messages.push(...this._result[field].messages);
+      fieldResult.messages = Object.assign(
+        [],
+        fieldResult.messages,
+        this._result[field].messages
+      );
       Object.assign(this._result[field], fieldResult);
     } else {
       this._result[field] = Object.assign(

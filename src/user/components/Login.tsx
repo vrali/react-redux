@@ -17,6 +17,7 @@ import {
 import { styles, LoginStyle } from "./Login.style";
 import { Redirect } from "react-router";
 import { FormComponent } from "../../common/components/formComponent";
+import { ValidatedFormInputControl } from "../../common/components/ValidatedFormInputControl";
 
 interface Props {
   handleLogin: (userName, password) => void;
@@ -43,6 +44,13 @@ class Login extends FormComponent<Props & WithStyles<LoginStyle>, State> {
       return <Redirect to={this.props.referrerLocation} />;
     }
   }
+  login = () => {
+    this.validateBeforeSubmit().then(() => {
+      if (this.state.validations.isValid) {
+        this.props.handleLogin(this.state.userName, this.state.password);
+      }
+    });
+  };
 
   render() {
     let { handleLogin, theme, classes } = this.props;
@@ -57,52 +65,29 @@ class Login extends FormComponent<Props & WithStyles<LoginStyle>, State> {
         {this.redirectIfAuthenticated()}
         <form className={classes.loginForm} noValidate autoComplete="off">
           <Paper className={classes.container}>
-            <FormControl required={true} error={invalidEmail}>
-              <InputLabel htmlFor={this.stateKeys.userName}>Email</InputLabel>
-              <Input
-                id={this.stateKeys.userName}
-                className={classes.textField}
-                name={this.stateKeys.userName}
-                onBlur={this.handleInputChange}
-              />
-              {invalidEmail &&
-                this.state.validations[this.stateKeys.userName].messages.map(
-                  (message, index) => (
-                    <FormHelperText key={index} error>
-                      {message}
-                    </FormHelperText>
-                  )
-                )}
-            </FormControl>
+            <ValidatedFormInputControl
+              label="Email"
+              textFieldClass={classes.textField}
+              validations={this.state.validations}
+              fieldName={this.stateKeys.userName}
+              onBlur={this.validateOnBlur}
+              onChange={this.handleInputChange}
+              required={true}
+            />
+
             <br />
-            <FormControl required={true}>
-              <InputLabel htmlFor={this.stateKeys.password}>
-                Password
-              </InputLabel>
-              <Input
-                id={this.stateKeys.password}
-                type="password"
-                className={classes.textField}
-                name={this.stateKeys.password}
-                onChange={this.handleInputChange}
-                onBlur={this.handleInputChange}
-              />
-              {invalidPassword &&
-                this.state.validations[this.stateKeys.password].messages.map(
-                  (message, index) => (
-                    <FormHelperText key={index} error>
-                      {message}
-                    </FormHelperText>
-                  )
-                )}
-            </FormControl>
+            <ValidatedFormInputControl
+              label="Password"
+              textFieldClass={classes.textField}
+              validations={this.state.validations}
+              fieldName={this.stateKeys.password}
+              onBlur={this.validateOnBlur}
+              onChange={this.handleInputChange}
+              type="password"
+              required={true}
+            />
             <div className={classes.buttonContainer}>
-              <Button
-                variant="raised"
-                color="secondary"
-                onClick={event => this.props.handleLogin(userName, password)}
-                disabled={!this.state.validations.isValid}
-              >
+              <Button variant="raised" color="secondary" onClick={this.login}>
                 Login
               </Button>
               <Button

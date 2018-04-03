@@ -10,10 +10,11 @@ declare interface FieldValidationResult {
   isInvalid: boolean;
   messages?: string[];
 }
-declare interface ValidationFieldResult {
-  [name: string]: FieldValidationResult;
+declare interface NamedProps<T> {
+  [name: string]: T;
 }
-declare type ValidationResult = ValidationBaseResult & ValidationFieldResult;
+declare type ValidationResult = ValidationBaseResult &
+  NamedProps<FieldValidationResult>;
 declare interface ValidationBaseResult {
   isValid?: boolean;
 }

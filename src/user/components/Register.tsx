@@ -1,7 +1,7 @@
 import * as React from "react";
 import {
   WithStyles,
-  TextField,
+  Input,
   Checkbox,
   Select,
   Button,
@@ -9,7 +9,6 @@ import {
   Paper,
   Divider,
   StyleRulesCallback,
-  Input,
   InputLabel,
   FormControl,
   FormHelperText
@@ -17,77 +16,129 @@ import {
 import { FormComponent } from "../../common/components/formComponent";
 import { RegisterStyle, styles } from "./Register.style";
 import { Redirect } from "react-router-dom";
+import { ValidatedFormInputControl } from "../../common/components/ValidatedFormInputControl";
 
 interface Props {
   handleRegister: (userName, password) => void;
   authenticated: boolean;
 }
 interface State {
-  userName?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
   password?: string;
+  passwordConfirmmation?: string;
+  phoneNumber?: string;
 }
 
-class Register extends React.Component<
-  Props & WithStyles<RegisterStyle>,
-  State
-> {
+class Register extends FormComponent<Props & WithStyles<RegisterStyle>, State> {
+  constructor(props) {
+    super(props);
+    this.stateKeys = {
+      email: "email",
+      password: "password",
+      passwordConfirmmation: "passwordConfirmmation",
+      firstName: "firstName",
+      lastName: "lastName",
+      phoneNumber: "phoneNumber"
+    };
+    this.validator
+      .addEmailValidation(this.stateKeys.email, true)
+      .addPasswordComplexityValidation(this.stateKeys.password)
+      .addMobilePhoneValidation(this.stateKeys.phoneNumber);
+    this.state = { validations: this.validator.validationState };
+  }
+  validateSamePasswords = event => {
+    this.validator.addFieldValidationToResult(event.target.name, {
+      isInvalid: this.state.password !== this.state.passwordConfirmmation,
+      messages: ["Password do not match"]
+    });
+    this.updateValidationsInState();
+  };
+
   redirectIfAuthenticated() {
     if (this.props.authenticated) {
       return <Redirect to="/" />;
     }
   }
-  handleClick() {}
+  signUp = () => {
+    this.validateBeforeSubmit();
+  };
 
   render() {
     const { theme, classes } = this.props;
+    let { email, password } = this.state;
 
     return (
       <div>
         {this.redirectIfAuthenticated()}
         <form className={classes.loginForm} noValidate autoComplete="off">
           <Paper className={classes.container}>
-            <TextField
+            <ValidatedFormInputControl
               label="Email"
-              placeholder="Email"
-              className={classes.textField}
-              margin="normal"
+              textFieldClass={classes.textField}
+              validations={this.state.validations}
+              fieldName={this.stateKeys.email}
+              onBlur={this.validateOnBlur}
+              onChange={this.handleInputChange}
+              required={true}
             />
             <br />
-            <TextField
+
+            <ValidatedFormInputControl
               label="Password"
-              className={classes.textField}
+              textFieldClass={classes.textField}
+              validations={this.state.validations}
+              fieldName={this.stateKeys.password}
               type="password"
-              autoComplete="current-password"
-              margin="normal"
+              onBlur={this.validateOnBlur}
+              onChange={this.handleInputChange}
+              required={true}
             />
             <br />
-            <TextField
+
+            <ValidatedFormInputControl
+              label="Password Confirmation"
+              textFieldClass={classes.textField}
+              validations={this.state.validations}
+              fieldName={this.stateKeys.passwordConfirmmation}
+              type="password"
+              onBlur={this.validateSamePasswords}
+              onChange={this.handleInputChange}
+              required={true}
+            />
+            <br />
+            <ValidatedFormInputControl
               label="First Name"
-              placeholder="First Name"
-              className={classes.textField}
-              margin="normal"
+              textFieldClass={classes.textField}
+              validations={this.state.validations}
+              fieldName={this.stateKeys.firstName}
+              onBlur={this.validateOnBlur}
+              onChange={this.handleInputChange}
+              required={true}
             />
             <br />
-            <TextField
+            <ValidatedFormInputControl
               label="Last Name"
-              placeholder="Last Name"
-              className={classes.textField}
-              margin="normal"
+              textFieldClass={classes.textField}
+              validations={this.state.validations}
+              fieldName={this.stateKeys.lastName}
+              onBlur={this.validateOnBlur}
+              onChange={this.handleInputChange}
+              required={true}
             />
             <br />
-            <TextField
-              label="Phone Number"
-              placeholder="Phone Number"
-              className={classes.textField}
-              margin="normal"
+            <ValidatedFormInputControl
+              label="Phone"
+              textFieldClass={classes.textField}
+              validations={this.state.validations}
+              fieldName={this.stateKeys.phoneNumber}
+              onBlur={this.validateOnBlur}
+              onChange={this.handleInputChange}
             />
             <br />
             <div className={classes.buttonContainer}>
-              <Button
-                variant="raised"
-                color="secondary"
-                onClick={event => this.handleClick()}
-              >
+              <Button variant="raised" color="secondary" onClick={this.signUp}>
                 Signup
               </Button>
             </div>
